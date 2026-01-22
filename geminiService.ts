@@ -3,9 +3,11 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { AIResponse, UserInputs, DesignProposal } from "./types";
 
 const getApiKey = () => {
-  const key = process.env.API_KEY;
-  if (!key || key === 'undefined') {
-    throw new Error("API-nøkkel mangler. Vennligst sjekk Environment Variables i Vercel.");
+  // Sjekker alle mulige steder nøkkelen kan ligge etter Vite-prosessering
+  const key = process.env.API_KEY || (import.meta as any).env?.VITE_API_KEY;
+  
+  if (!key || key === 'undefined' || key === '') {
+    throw new Error("API-nøkkel mangler. Sørg for at VITE_API_KEY er satt i Vercel og at du har gjort en 'Redeploy'.");
   }
   return key;
 };
